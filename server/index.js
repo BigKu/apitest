@@ -2,6 +2,7 @@ var express = require('express');
 var ejs = require('ejs');
 var app = express();
 var path = require('path');
+var bodyParser = require('body-parser');
 
 // disable view-caching
 app.disable('view cache');
@@ -14,9 +15,18 @@ app.engine('html', ejs.renderFile);
 // serve static files
 app.use(express.static('public'));
 
+//parse json
+app.use(bodyParser.json());//
+app.use(bodyParser.urlencoded({extended:true}));//for parsing
+
+
 // routes
 app.use('/api',require('./api'));
 app.use('/', require('./www'));
+
+
+
+
 
 app.listen(3000, function () {
   console.log('rest api server listening on port 3000!');
