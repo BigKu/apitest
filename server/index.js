@@ -3,6 +3,19 @@ var ejs = require('ejs');
 var app = express();
 var path = require('path');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+
+//LOAD THE CONFIG
+var config = require('../config/server.config');
+
+//CONNECT TO MONGOOSE
+var db = mongoose.connection;
+db.on('error',console.error);
+db.once('open', function(){
+  console.log('Connected to mongdb server');
+});
+
+mongoose.connect(config.mongodbUri);
 
 // disable view-caching
 app.disable('view cache');
@@ -14,6 +27,7 @@ app.engine('html', ejs.renderFile);
 
 // serve static files
 app.use(express.static('public'));
+
 
 //parse json
 app.use(bodyParser.json());//

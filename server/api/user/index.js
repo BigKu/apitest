@@ -9,7 +9,7 @@ module.exports = router;
 
 router.get('/list', function (req, res) {
   fs.readFile( path.join(__dirname, '../../../data/user.json'), 'utf8', function (err, data) {
-    console.log( data );
+    //console.log( data );
     res.end( data );
   });
 });
