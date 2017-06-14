@@ -17,6 +17,9 @@ db.once('open', function(){
 
 mongoose.connect(config.mongodbUri);
 
+//DEFINE MODEL
+var Userdb = require('../models/user');
+
 // disable view-caching
 app.disable('view cache');
 
