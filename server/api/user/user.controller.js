@@ -1,8 +1,8 @@
-var Userdb = require('mongoose').model('Userdb');
+var Userdb = require('../../../models/user');
 var fs = require('fs');
 var path = require('path');
 
-
+// db controller
 exports.create = function (req, res) {
     var user = new Userdb();
     user.info = req.body.info;
@@ -20,11 +20,11 @@ exports.create = function (req, res) {
 
 exports.listAll = function (req, res) {
 
-    Userdb.find(function(err,user){
+    Userdb.find(function(err, result){
         if(err) {
             return res.status(500).send({error: 'database failure'});
         }
-        res.json(user);
+        res.json(result);
     });
 };
 
@@ -37,7 +37,48 @@ exports.listOne = function (req, res) {
     });
 };
 
+exports.listFindname = function (req, res) {
 
+    Userdb.findOne({user: req.params.username},  {_id: 0, __v: 0}, function(err, user){
+        if(err) return res.status(500).json({error: err});
+        if(!user) return res.status(404).json({error: 'user not found'});
+        res.json(user);
+        console.log(user)
+    });
+};
+
+exports.updateOne = function (req, res) {
+
+    Userdb.findById(req.params.user_id, function(err, user){
+        if(err) return res.status(500).json({ error: 'database failure' });
+        if(!user) return res.status(404).json({ error: 'user not found' });
+
+        if(req.body.info.username) user.info.username = req.body.info.username;
+        if(req.body.info.password) user.info.password = req.body.info.password;
+
+        user.save(function(err){
+            if(err) res.status(500).json({error: 'failed to update'});
+            res.json({message: 'user updated'});
+        });
+
+    });
+};
+
+exports.removeData = function(req, res){
+    Userdb.findOneAndRemove({user: req.params.username }, function(err, output){
+        if(err) return res.status(500).json({ error: "database failure" });
+
+        /* ( SINCE DELETE OPERATION IS IDEMPOTENT, NO NEED TO SPECIFY )
+         if(!output.result.n) return res.status(404).json({ error: "book not found" });
+         res.json({ message: "book deleted" });
+         */
+
+        res.status(204).end();
+    })
+};
+
+
+//file controller
 exports.getAll = function (req, res) {
     fs.readFile(path.join(__dirname, '../../../data/user.json'), 'utf8', function (err, data) {
         res.end(data);
