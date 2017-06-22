@@ -10,7 +10,7 @@ router.post('/useradd/:username', userCtrl.create);
 router.get('/userlist',userCtrl.listAll);
 router.get('/userfind/:user_id',userCtrl.listOne);
 router.get('/namefind/:username',userCtrl.listFindname);
-router.put('/update/:user_id',userCtrl.updateOne);
+router.put('/update/:username',userCtrl.updateOne);
 router.delete('/remove/:username',userCtrl.removeData);
 
 router.get('/list', userCtrl.getAll);

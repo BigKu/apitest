@@ -47,21 +47,13 @@ exports.listFindname = function (req, res) {
     });
 };
 
-exports.updateOne = function (req, res) {
-
-    Userdb.findById(req.params.user_id, function(err, user){
-        if(err) return res.status(500).json({ error: 'database failure' });
-        if(!user) return res.status(404).json({ error: 'user not found' });
-
-        if(req.body.info.username) user.info.username = req.body.info.username;
-        if(req.body.info.password) user.info.password = req.body.info.password;
-
-        user.save(function(err){
-            if(err) res.status(500).json({error: 'failed to update'});
-            res.json({message: 'user updated'});
-        });
-
-    });
+exports.updateOne = function(req, res){
+    Userdb.update({ user: req.params.username }, { $set: req.body }, function(err, output){
+        if(err) res.status(500).json({ error: 'database failure' });
+        console.log(output);
+        if(!output.n) return res.status(404).json({ error: 'user not found' });
+        res.json( { message: 'User updated' } );
+    })
 };
 
 exports.removeData = function(req, res){
